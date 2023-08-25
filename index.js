@@ -46,8 +46,16 @@ async function run() {
       const filter = {_id: new ObjectId(clientId)};
       const user = await allClients.findOne(filter);
       if(user){
-        const mergedAttachments = [...user.attachments, ...newData];
-
+        if(!user.attachments){
+          const userUpdate = {
+            $set: {
+              attachments: newData
+            }
+          };
+          const result = await allClients.updateOne(filter, userUpdate);
+      res.send(result);
+        }else{
+          const mergedAttachments = [...user.attachments, ...newData];
         const userUpdate = {
           $set: {
             attachments: mergedAttachments
@@ -56,6 +64,8 @@ async function run() {
        
         const result = await allClients.updateOne(filter, userUpdate);
       res.send(result);
+        }
+
       }
       else{
         res.json("Something Wrong")
