@@ -46,7 +46,7 @@ async function run() {
       const filter = {_id: new ObjectId(clientId)};
       const user = await allClients.findOne(filter);
       if(user){
-        if(!user.attachments){
+        if(!user.attachments || user.attachments.length > 0){
           const userUpdate = {
             $set: {
               attachments: newData
